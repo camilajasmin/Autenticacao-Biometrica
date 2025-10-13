@@ -1,4 +1,4 @@
-# 🔒 Sistema de Autenticação Biométrica Facial (APS UNIP)
+# Sistema de Autenticação Biométrica Facial (APS UNIP)
 
 ## 🎯 Objetivo do Projeto
 
@@ -8,7 +8,7 @@ A missão é desenvolver uma solução de **Reconhecimento Facial** para atuar n
 
 ---
 
-## 🚀 Funcionalidades Principais
+##  Funcionalidades Principais
 
 O sistema implementa o **Reconhecimento Facial** para realizar a **identificação e autenticação** dos usuários, permitindo ou negando o acesso com base em um rigoroso esquema de permissões.
 
@@ -32,7 +32,7 @@ O desenvolvimento segue os requisitos técnicos de aplicação do **Processament
 
 ---
 
-## 💻 Tecnologias Envolvidas
+## Tecnologias Envolvidas
 
 * **Linguagem de Programação:** Python
 * **Bibliotecas de Visão Computacional:** -
