@@ -16,9 +16,9 @@ O sistema implementa o **Reconhecimento Facial** para realizar a **identificaç�
 
 O acesso ao cofre é estritamente controlado por um sistema de permissões de três níveis:
 
-* **Nível 1 (Acesso Geral)**
-* **Nível 2 (Acesso Restrito)** 
-* **Nível 3 (Acesso Exclusivo)**
+* **Nível 1 (Acesso Geral)** : Camila, Dafny, Sabrina, Vanessa e Quezia
+* **Nível 2 (Acesso Restrito)** : Camila e Vanessa
+* **Nível 3 (Acesso Exclusivo)** : Camila
 
 ### Processamento de Imagens
 
@@ -35,8 +35,7 @@ O desenvolvimento segue os requisitos técnicos de aplicação do **Processament
 ## Tecnologias Envolvidas
 
 * **Linguagem de Programação:** Python
-* **Bibliotecas de Visão Computacional:** -
-* **Banco de Dados:** -
+* **Bibliotecas de Visão Computacional:** OpenCV
 * **Estrutura da Aplicação:** PyQt
 
 ---
@@ -47,4 +46,5 @@ O desenvolvimento segue os requisitos técnicos de aplicação do **Processament
 * **Dafny**
 * **Sabrina** 
 * **Quezia**
-* **Vanessa** 
+* **Vanessa**
+  
