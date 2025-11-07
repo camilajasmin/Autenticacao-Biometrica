@@ -3,7 +3,6 @@ from PIL import Image
 from os import listdir
 from os.path import isdir
 from numpy import asarray
-from tensorflow.compiler.mlir.quantization.tensorflow.python.quantize_model import quantize
 
 detector = MTCNN()
 
