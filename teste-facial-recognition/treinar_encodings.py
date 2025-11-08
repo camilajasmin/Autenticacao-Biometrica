@@ -6,14 +6,11 @@ import time
 
 # --- 1. CONFIGURAÇÃO DE DIRETÓRIOS E ACESSO ---
 
-# Pasta onde estão os recortes padronizados (Saída do extract-faces.py)
-# VERIFIQUE E AJUSTE ESTE CAMINHO SE NECESSÁRIO!
+
 DIR_FACES = "C:\\Users\\Camila\\PycharmProjects\\Autenticacao-Biometrica\\teste-facial-recognition\\rostos\\faces\\"
 
-# Arquivo final onde os dados de biometria e acesso serão salvos
 FILE_OUTPUT = "dados_biometricos.pkl"
 
-# Dicionário que define o nível de acesso (Com Camila no Nível 3)
 NIVEIS_DE_ACESSO = {
     "camila": [1, 2, 3],  # Camila: Nível 1, 2 e 3
     "vanessa": [1, 2],  # Vanessa: Nível 1 e 2
@@ -22,19 +19,19 @@ NIVEIS_DE_ACESSO = {
     "dafny": [1]  # Dafny: Nível 1
 }
 
-# Inicializa as listas
+# Inicializa
 conhecidos_encodings = []
 conhecidos_ids = []
 conhecidos_niveis = []
 
 
-# --- 2. FUNÇÃO DE PROCESSAMENTO ---
+# --- 2.  PROCESSAMENTO ---
 
 def treinar_e_salvar_encodings():
     start_time = time.time()
     print("Iniciando Embedding e Treinamento Biométrico...")
 
-    # Percorre as subpastas (que são os IDs dos usuários)
+
     for nome_usuario in os.listdir(DIR_FACES):
         path_usuario = os.path.join(DIR_FACES, nome_usuario)
 
@@ -44,11 +41,11 @@ def treinar_e_salvar_encodings():
             niveis_acesso = NIVEIS_DE_ACESSO[nome_usuario.lower()]
             print(f"-> Processando: {nome_usuario} (Níveis: {niveis_acesso})")
 
-            # Percorre todas as imagens padronizadas do usuário
+
             for filename in os.listdir(path_usuario):
                 path_imagem = os.path.join(path_usuario, filename)
 
-                # Garante que é um arquivo de imagem (p. ex., jpg, jpeg, png)
+
                 if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
                     try:
                         # Carrega a imagem e gera o embedding (vetor de 128 dimensões)
@@ -70,14 +67,14 @@ def treinar_e_salvar_encodings():
     tempo_total = end_time - start_time
 
     if len(conhecidos_encodings) > 0:
-        # Organiza todos os dados em um dicionário
+
         dados_finais = {
             "encodings": np.array(conhecidos_encodings),
             "ids": conhecidos_ids,
             "niveis_acesso": conhecidos_niveis
         }
 
-        # Salva o dicionário usando pickle (serialização)
+
         with open(FILE_OUTPUT, 'wb') as f:
             pickle.dump(dados_finais, f)
 

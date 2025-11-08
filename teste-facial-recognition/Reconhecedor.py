@@ -1,4 +1,3 @@
-# Reconhecedor.py
 
 import pickle
 import numpy as np
@@ -12,16 +11,14 @@ class Reconhecedor:
         """Carrega os embeddings (encodings) e os dados de acesso do arquivo PKL."""
         self.dados = self._carregar_dados(caminho_pkl)
 
-        # Tolerância para o reconhecimento: 0.6 é o padrão.
+
         self.TOLERANCIA = 0.6
 
-        # Detector de face para desenhar o quadrado no frame da câmera
         self.face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
     def _carregar_dados(self, caminho):
         """Método interno para carregar o arquivo pickle."""
         try:
-            # Caminho corrigido para buscar o .pkl no diretório raiz do projeto
             with open(caminho, 'rb') as f:
                 dados = pickle.load(f)
                 print(f"✅ Dados biométricos carregados. Total de encodings: {len(dados['encodings'])}")
@@ -46,11 +43,11 @@ class Reconhecedor:
         if len(faces) == 0:
             return "Nenhum", 0, "Nenhuma Face Detectada", None
 
-        # Foca na primeira face detectada
+
         (x, y, w, h) = faces[0]
         bbox = (x, y, w, h)
 
-        # Ajusta a bounding box para o formato esperado pelo face_recognition
+
         face_rect = [(y, x + w, y + h, x)]
 
         # 2. Extração e Encoding
@@ -64,14 +61,14 @@ class Reconhecedor:
 
         # 3. Comparação Biometrica
 
-        # Compara com todos os encodings conhecidos (do .pkl)
+
         comparacoes = face_recognition.compare_faces(
             self.dados["encodings"],
             encoding_camera[0],
             self.TOLERANCIA
         )
 
-        # Encontra a melhor correspondência para obter a ID e Níveis
+
         face_distances = face_recognition.face_distance(self.dados["encodings"], encoding_camera[0])
         best_match_index = np.argmin(face_distances)
 
@@ -81,8 +78,6 @@ class Reconhecedor:
         if comparacoes[best_match_index]:
             id_match = self.dados["ids"][best_match_index]
             niveis_match = self.dados["niveis_acesso"][best_match_index]
-
-            # --- Lógica de Acesso (Baseada no Fluxo Figma) ---
 
             # 1. Verifica se a pessoa reconhecida é a pessoa que CLICOU no botão
             if id_match.lower() == id_esperado.lower():
