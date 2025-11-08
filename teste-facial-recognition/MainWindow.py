@@ -338,7 +338,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(widget)
 
     def create_tela_alerta_negado(self):
-        # Baseado na Tela de Alerta NEGADO do Figma (Encerra o programa)
+
         widget = QWidget()
         vbox = QVBoxLayout(widget)
         vbox.addLayout(self.create_header())
@@ -347,10 +347,10 @@ class MainWindow(QMainWindow):
 
         lbl_alerta = QLabel("ALERTA")
         lbl_alerta.setFont(QFont("Arial", 36, QFont.Bold))
-        lbl_alerta.setStyleSheet("color: #D32F2F;")  # Vermelho para negação
+        lbl_alerta.setStyleSheet("color: #D32F2F;")
         vbox.addWidget(lbl_alerta, alignment=Qt.AlignCenter)
 
-        # Placeholder para o ícone de cadeado grande
+
         lbl_cadeado = QLabel("🛑")
         lbl_cadeado.setFont(QFont("Arial", 100))
         vbox.addWidget(lbl_cadeado, alignment=Qt.AlignCenter)
