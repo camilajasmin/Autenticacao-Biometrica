@@ -43,10 +43,14 @@ O desenvolvimento segue os requisitos técnicos de aplicação do **Processament
 ---
 ## 👥 Membros da Equipe
 
-| Nome | Ícone |
-| :--- | :---: |
-| **Camila** | ![Ícone da Camila](Autenticacao-Biometrica\teste-facial-recognition\imgsprojeto\icons\camilaicon.jpg) |
-| **Dafny** | ![Ícone da Dafny](icons/dafnyicon.jpg) |
-| **Sabrina** | ![Ícone da Sabrina](icons/sabrinaicon.jpg) |
-| **Quezia** | ![Ícone da Quezia](icons/queziaicon.jpg) |
-| **Vanessa** | ![Ícone da Vanessa](icons/vanessaicon.jpg) |
+
+
+* **Camila** 
+
+* **Dafny**
+
+* **Sabrina** 
+
+* **Quezia**
+
+* **Vanessa**
