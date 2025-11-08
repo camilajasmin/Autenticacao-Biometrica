@@ -1,4 +1,3 @@
-# MainWindow.py
 import numpy as np
 import sys
 import os
@@ -12,12 +11,9 @@ from PyQt5.QtGui import QPixmap, QImage, QFont, QColor
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot
 import cv2
 
-# Importamos a lógica e o motor assíncrono
 from Reconhecedor import Reconhecedor
 from CameraThread import CameraThread
 
-# --- CONFIGURAÇÕES GLOBAIS ---
-# Mapeamento para exibição na UI (Nome Longo vs. ID do sistema)
 ID_USUARIOS = {
     "C.J.E.C": "camila",
     "D.S.A": "dafny",
@@ -26,7 +22,6 @@ ID_USUARIOS = {
     "V.S.L": "vanessa"
 }
 
-# --- CAMINHOS DE MÍDIA (CORRIGIR SE NECESSÁRIO) ---
 PATH_ICONS = "imgsprojeto/icons/"
 PATH_LOGO = "imgsprojeto/loguinho/logobioaccess.png"
 
@@ -34,10 +29,10 @@ PATH_LOGO = "imgsprojeto/loguinho/logobioaccess.png"
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("BioAccess - Sistema de Autenticação Biometrica")
+        self.setWindowTitle("BioAccess")
         self.setGeometry(100, 100, 800, 600)
 
-        # Inicializa o motor de reconhecimento
+
         self.recon_engine = Reconhecedor()
 
         # Variáveis de estado
@@ -45,7 +40,7 @@ class MainWindow(QMainWindow):
         self.id_selecionado = None
         self.nivel_acesso_desejado = 1
 
-        # --- Configura o Stacked Widget para gerenciar as telas do Figma ---
+        # Container das telas do sistema
         self.stack = QStackedWidget()
         self.setCentralWidget(self.stack)
 
@@ -60,59 +55,52 @@ class MainWindow(QMainWindow):
         self.create_tela_acesso_concedido(nivel=3)
         self.create_tela_alerta_negado()
 
-        # Mostra a Tela Inicial ao iniciar
+        # Tela inicial; Boas vindas
         self.stack.setCurrentIndex(0)
 
-    # --- FUNÇÕES DE NAVEGAÇÃO ---
+    #  NAVEGAÇÃO
 
     def goto_tela_inicial(self):
         self.stack.setCurrentIndex(0)
 
     def goto_selecao(self, nivel):
-        # Vai para o índice da tela de seleção com base no nível
-        # Índices: 1 (Seleção N1), 2 (Seleção N2), 3 (Seleção N3)
         self.nivel_acesso_desejado = nivel
         self.stack.setCurrentIndex(nivel)
 
     def goto_autenticacao(self):
-        # Tela de autenticação está no índice 4
         self.stack.setCurrentIndex(4)
         self.iniciar_autenticacao()
 
     def goto_sucesso(self, nivel):
-        # Índices de Sucesso: 5 (Sucesso N1), 6 (Sucesso N2), 7 (Sucesso N3)
         self.stack.setCurrentIndex(4 + nivel)
 
     def goto_negado(self):
-        # Tela de Alerta Negado está no índice 8
         self.stack.setCurrentIndex(8)
-        # Conforme o Figma, o sistema encerra automaticamente após a negação
-        QTimer.singleShot(3000, self.close)  # Encerra após 3 segundos
+        QTimer.singleShot(5000, self.close)  # Encerra após 5 segundos
 
-    # --- FLUXO DE THREAD E BIOMETRIA ---
+    # FLUXO
 
     def iniciar_autenticacao(self):
-        """Inicia a QThread da câmera para o ID e Nível selecionados."""
+        """Inicia"""
         if self.current_thread and self.current_thread.isRunning():
             self.current_thread.stop()
 
-        # Garante que o ID foi selecionado
         if not self.id_selecionado:
             print("Erro: ID de usuário não selecionada.")
             self.goto_selecao(self.nivel_acesso_desejado)
             return
 
-        # Atualiza o QLabel da Tela de Autenticação
+        # Autenticando
         self.findChild(QLabel, "lbl_status_autenticacao").setText("Analisando...")
         self.findChild(QLabel, "lbl_video_feed").setText("Aguardando ativação da webcam...")
 
-        # Cria e inicia a thread da câmera
+        # webcam
         self.current_thread = CameraThread(
             self.recon_engine,
             self.id_selecionado,
             self.nivel_acesso_desejado
         )
-        # Conecta os sinais da thread aos slots da Main Window
+        #
         self.current_thread.change_pixmap_signal.connect(self.update_image)
         self.current_thread.resultado_reconhecimento_signal.connect(self.handle_resultado_biometria)
 
@@ -129,17 +117,17 @@ class MainWindow(QMainWindow):
         """Recebe o resultado da autenticação e gerencia a navegação."""
         id_reconhecida, nivel_max, status = resultado
 
-        # Atualiza o status na tela de Autenticação
+        # status autenticação
         lbl_status = self.findChild(QLabel, "lbl_status_autenticacao")
         lbl_status.setText(f"Analisando: {status}")
 
         if status == "ACESSO CONCEDIDO":
-            # Para a thread e navega para a tela de sucesso
+            # SEGUE
             self.current_thread.stop()
             self.goto_sucesso(self.nivel_acesso_desejado)
 
         elif "NEGADO" in status or status == "WEBCAM_FALHA":
-            # Para a thread e navega para a tela de alerta
+            # ENCERRA
             self.current_thread.stop()
             self.goto_negado()
 
@@ -156,17 +144,15 @@ class MainWindow(QMainWindow):
         header = QHBoxLayout()
         lbl_logo = QLabel()
 
-        # Carrega a logo a partir do caminho
+
         if os.path.exists(PATH_LOGO):
-            pixmap = QPixmap(PATH_LOGO).scaledToHeight(60)  # Ajuste o tamanho se precisar
+            pixmap = QPixmap(PATH_LOGO).scaledToHeight(90)
             lbl_logo.setPixmap(pixmap)
         else:
-            lbl_logo.setText("BioAccess Logo")  # Texto de fallback se não encontrar
+            lbl_logo.setText("BioAccess Logo")
             lbl_logo.setStyleSheet("color: white;")
 
         header.addWidget(lbl_logo)
-        # Remova ou ajuste o addStretch se quiser o logo sempre na esquerda superior
-        # header.addStretch(1)
         return header
 
     def create_tela_inicial(self):
@@ -178,81 +164,85 @@ class MainWindow(QMainWindow):
         # Cria um widget para o cabeçalho para poder alinhar
         header_widget = QWidget()
         header_widget.setLayout(header_layout)
-        header_widget.setFixedHeight(80)  # Altura fixa para o cabeçalho
+        header_widget.setFixedHeight(150)  # Altura fixa para o cabeçalho
         vbox.addWidget(header_widget, alignment=Qt.AlignLeft | Qt.AlignTop)
 
         # Adiciona um espaçador para empurrar o conteúdo para baixo
-        vbox.addSpacing(50)  # Espaço entre o cabeçalho e o texto principal
+        vbox.addSpacing(10)
 
         # "Seja bem-vinda ao"
         lbl_titulo = QLabel("Seja bem-vinda ao")
         lbl_titulo.setFont(QFont("Arial", 16))
-        lbl_titulo.setStyleSheet("color: white;")
+        lbl_titulo.setStyleSheet("color: #2C5C12;")
         vbox.addWidget(lbl_titulo, alignment=Qt.AlignCenter)
 
         # "BioAccess"
         lbl_bioaccess = QLabel("BioAccess")
-        lbl_bioaccess.setFont(QFont("Arial", 48, QFont.Bold))
-        lbl_bioaccess.setStyleSheet("color: #4CAF50;")
+        lbl_bioaccess.setFont(QFont("Inter", 48))
+        lbl_bioaccess.setStyleSheet("color: #B1FF87;")
         vbox.addWidget(lbl_bioaccess, alignment=Qt.AlignCenter)
 
-        # NOVO: Texto adicional "O sistema de informação..."
+
         lbl_subtitulo = QLabel("O sistema de informação do Ministério do Meio Ambiente")
         lbl_subtitulo.setFont(QFont("Arial", 14))
-        lbl_subtitulo.setStyleSheet("color: #4CAF50;")  # Cor verde
+        lbl_subtitulo.setStyleSheet("color: #5F9F3D;")
         vbox.addWidget(lbl_subtitulo, alignment=Qt.AlignCenter)
 
-        vbox.addStretch(1)  # Espaço expansível
+        vbox.addStretch(1)
 
         # Botão Entrar
         btn_entrar = QPushButton("Entrar")
-        btn_entrar.setFont(QFont("Arial", 18, QFont.Bold))
-        btn_entrar.setStyleSheet("background-color: #388E3C; color: white; padding: 10px; border-radius: 5px;")
+        btn_entrar.setFont(QFont("Inter", 10))
+        btn_entrar.setStyleSheet("background-color: #244B0E; color:#B1FF87 ; padding: 3px; border-radius: 100px;")
         btn_entrar.setFixedSize(200, 60)
         btn_entrar.clicked.connect(lambda: self.goto_selecao(nivel=1))
 
         vbox.addWidget(btn_entrar, alignment=Qt.AlignCenter)
-        vbox.addStretch(2)  # Mais espaço expansível para empurrar o botão para cima
+        vbox.addStretch(2)
 
         widget.setStyleSheet("background-color: black;")
         self.stack.addWidget(widget)
 
     def create_tela_selecao(self, nivel):
-        # Baseado nas Telas de Seleção Nível 1, 2 e 3 do Figma
         widget = QWidget()
         vbox = QVBoxLayout(widget)
-        vbox.addLayout(self.create_header())
 
-        lbl_titulo = QLabel(f"Seleção de usuário para entrar no nível {nivel}")
-        lbl_titulo.setFont(QFont("Arial", 24, QFont.Bold))
-        lbl_titulo.setStyleSheet("color: white;")
-        vbox.addWidget(lbl_titulo, alignment=Qt.AlignCenter)
+        top_bar_h_box = QHBoxLayout()
 
-        lbl_quem = QLabel("Quem está acessando?")
-        lbl_quem.setFont(QFont("Arial", 18))
-        lbl_quem.setStyleSheet("color: #4CAF50;")
-        vbox.addWidget(lbl_quem)
+        lbl_logo = QLabel()
+        if os.path.exists(PATH_LOGO):
+            pixmap = QPixmap(PATH_LOGO).scaledToHeight(95)
+            lbl_logo.setPixmap(pixmap)
+        else:
+            lbl_logo.setText("BioAccess Logo")
+            lbl_logo.setStyleSheet("color: white;")
+
+        top_bar_h_box.addWidget(lbl_logo, alignment=Qt.AlignLeft | Qt.AlignVCenter)
+
+        lbl_quem_header = QLabel(" Quem está acessando o nível 1?")
+        lbl_quem_header.setFont(QFont("Arial", 20))
+        lbl_quem_header.setStyleSheet("color: #2C5C12;")
+        top_bar_h_box.addWidget(lbl_quem_header, alignment=Qt.AlignVCenter)
+
+        top_bar_h_box.addStretch(1)
+        vbox.addLayout(top_bar_h_box)
 
         list_widget = QListWidget()
-        list_widget.setStyleSheet("background-color: black; border: 1px solid #333; color: white;")
+        list_widget.setStyleSheet("background-color: black; border: 0px; color: white;")
 
-        # Popula a lista de usuários
+
         for nome_curto, id_sistema in ID_USUARIOS.items():
-            # Apenas usuários com nível de acesso suficiente aparecem na lista
-            # Como a lógica de acesso só está no .pkl, vamos mostrar todos por enquanto
-            # A lógica de Nível é verificada no Reconhecedor, não na seleção
             item = QListWidgetItem(list_widget)
             item_widget = self.create_user_list_item(nome_curto, id_sistema)
             item.setSizeHint(item_widget.sizeHint())
             list_widget.setItemWidget(item, item_widget)
 
-        # Conecta o clique da lista à função que inicia a autenticação
+        # Conecta o clique (Lógica de navegação mantida)
         def on_item_clicked(item):
-            # Obtém o nome curto e faz o mapeamento para a ID do sistema
             selected_widget = list_widget.itemWidget(item)
             nome_curto = selected_widget.findChild(QLabel, "lbl_nome_curto").text()
             self.id_selecionado = ID_USUARIOS[nome_curto]
-            self.goto_autenticacao()  # Vai para a tela da webcam
+            self.goto_autenticacao()
 
         list_widget.itemClicked.connect(on_item_clicked)
         vbox.addWidget(list_widget)
@@ -270,7 +260,7 @@ class MainWindow(QMainWindow):
         lbl_icon = QLabel()
         icon_path = os.path.join(PATH_ICONS, f"{id_sistema}icon.png")
         if os.path.exists(icon_path):
-            pixmap = QPixmap(icon_path).scaledToHeight(40)
+            pixmap = QPixmap(icon_path).scaledToHeight(97)
             lbl_icon.setPixmap(pixmap)
         else:
             lbl_icon.setText("[Icon]")
@@ -287,7 +277,7 @@ class MainWindow(QMainWindow):
         return item_widget
 
     def create_tela_autenticacao(self):
-        # Baseado na Tela de Autenticação do Usuário Selecionado do Figma
+
         widget = QWidget()
         vbox = QVBoxLayout(widget)
         vbox.addLayout(self.create_header())
@@ -379,7 +369,6 @@ class MainWindow(QMainWindow):
         widget.setStyleSheet("background-color: black;")
         self.stack.addWidget(widget)
 
-    # --- Utilitário de Conversão OpenCV para Qt ---
     def convert_cv_qt(self, cv_img):
         """Converte o frame do OpenCV (BGR) para o formato QPixmap para exibição."""
         rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
@@ -392,8 +381,6 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-
-    # Define o estilo da aplicação
     app.setStyle("Fusion")
 
     window = MainWindow()
