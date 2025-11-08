@@ -45,7 +45,7 @@ O desenvolvimento segue os requisitos técnicos de aplicação do **Processament
 
 | Nome | Ícone |
 | :--- | :---: |
-| **Camila** | ![Ícone da Camila](icons/camilaicon.jpeg) |
+| **Camila** | ![Ícone da Camila](Autenticacao-Biometrica\teste-facial-recognition\imgsprojeto\icons\camilaicon.jpg) |
 | **Dafny** | ![Ícone da Dafny](icons/dafnyicon.jpg) |
 | **Sabrina** | ![Ícone da Sabrina](icons/sabrinaicon.jpg) |
 | **Quezia** | ![Ícone da Quezia](icons/queziaicon.jpg) |
