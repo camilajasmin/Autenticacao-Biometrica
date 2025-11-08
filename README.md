@@ -40,11 +40,13 @@ O desenvolvimento segue os requisitos técnicos de aplicação do **Processament
 
 ---
 
+---
 ## 👥 Membros da Equipe
 
-* **Camila** 
-* **Dafny**
-* **Sabrina** 
-* **Quezia**
-* **Vanessa**
-  
+| Nome | Ícone |
+| :--- | :---: |
+| **Camila** | ![Ícone da Camila](icons/camilaicon.jpeg) |
+| **Dafny** | ![Ícone da Dafny](icons/dafnyicon.jpg) |
+| **Sabrina** | ![Ícone da Sabrina](icons/sabrinaicon.jpg) |
+| **Quezia** | ![Ícone da Quezia](icons/queziaicon.jpg) |
+| **Vanessa** | ![Ícone da Vanessa](icons/vanessaicon.jpg) |
